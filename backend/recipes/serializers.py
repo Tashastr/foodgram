@@ -93,8 +93,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
                     "Each ingredient must have id and amount.")
             if not Ingredient.objects.filter(id=item['id']).exists():
                 raise serializers.ValidationError(
-                    f"Ingredient with id {
-                        item['id']} does not exist.")
+                    f"Ingredient with id {item['id']} does not exist.")
             if item['amount'] < 1:
                 raise serializers.ValidationError("Amount must be at least 1.")
         return value

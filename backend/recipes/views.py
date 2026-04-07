@@ -109,9 +109,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ingredients = {}
         for recipe in recipes:
             for ri in recipe.recipeingredient_set.all():
-                key = f"{
-                    ri.ingredient.name} ({
-                    ri.ingredient.measurement_unit})"
+                key = f"{ri.ingredient.name} ({ri.ingredient.measurement_unit})"
                 ingredients[key] = ingredients.get(key, 0) + ri.amount
         lines = [f"{name} — {amount}" for name, amount in ingredients.items()]
         content = "\n".join(lines)
