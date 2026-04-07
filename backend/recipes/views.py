@@ -117,12 +117,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ingredients = {}
         for recipe in recipes:
             for ri in recipe.recipeingredient_set.all():
-                key = f"{ri.ingredient.name} ({ri.ingredient.measurement_unit})"
+                key = (
+                    f"{ri.ingredient.name} "
+                    f"({ri.ingredient.measurement_unit})"
+                )
                 ingredients[key] = ingredients.get(key, 0) + ri.amount
         lines = [f"{name} — {amount}" for name, amount in ingredients.items()]
         content = "\n".join(lines)
         response = HttpResponse(content, content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename="shopping_list.txt"'
+        response['Content-Disposition'] = (
+            'attachment; filename="shopping_list.txt"'
+        )
         return response
 
     @action(detail=True, methods=['get'], url_path='get-link')
