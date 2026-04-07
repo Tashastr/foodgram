@@ -4,8 +4,16 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from .models import Tag, Ingredient, Recipe, Favorite, ShoppingCart
-from .serializers import TagSerializer, IngredientSerializer, RecipeListSerializer, RecipeCreateUpdateSerializer, RecipeMinifiedSerializer
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from .serializers import (
+    TagSerializer,
+    IngredientSerializer,
+    RecipeListSerializer,
+    RecipeCreateUpdateSerializer,
+    RecipeMinifiedSerializer
+)
+from rest_framework.permissions import (
+    IsAuthenticatedOrReadOnly, IsAuthenticated
+)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
