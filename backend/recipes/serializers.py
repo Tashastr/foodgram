@@ -88,17 +88,23 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     def validate_ingredients(self, value):
         if not value:
-            raise serializers.ValidationError('Список ингредиентов не может быть пустым.')
+            raise serializers.ValidationError('Список ингредиентов '
+                                              'не может быть пустым.')
         ids = [item['id'] for item in value]
         if len(ids) != len(set(ids)):
-            raise serializers.ValidationError('Ингредиенты не должны повторяться.')
+            raise serializers.ValidationError('Ингредиенты не должны '
+                                              'повторяться.')
         for item in value:
             if 'id' not in item or 'amount' not in item:
-                raise serializers.ValidationError('Каждый ингредиент должен содержать id и количество.')
+                raise serializers.ValidationError('Каждый ингредиент должен '
+                                                  'содержать id и количество.')
             if not Ingredient.objects.filter(id=item['id']).exists():
-                raise serializers.ValidationError(f'Ингредиент с id {item["id"]} не существует.')
+                raise serializers.ValidationError('Ингредиент с id '
+                                                  f'{item["id"]} '
+                                                  'не существует.')
             if item['amount'] < 1:
-                raise serializers.ValidationError('Количество ингредиента должно быть не менее 1.')
+                raise serializers.ValidationError('Количество ингредиента '
+                                                  'должно быть не менее 1.')
         return value
 
     def create(self, validated_data):
