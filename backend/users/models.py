@@ -4,7 +4,7 @@ from django.db import models
 
 class User(AbstractUser):
     email = models.EmailField(unique=True, verbose_name='Email')
-    avatar = models.ImageField(upload_to='avatars/', 
+    avatar = models.ImageField(upload_to='avatars/',
                                null=True, blank=True, verbose_name='Аватар'
                                )
 
