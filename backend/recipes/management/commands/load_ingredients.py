@@ -12,7 +12,8 @@ class Command(BaseCommand):
             reader = csv.reader(f)
             for row in reader:
                 name, unit = row
-                ingredients.append(Ingredient(name=name, measurement_unit=unit))
+                ingredients.append(Ingredient(name=name,
+                                              measurement_unit=unit))
         try:
             Ingredient.objects.bulk_create(ingredients, ignore_conflicts=True)
         except Exception as e:
