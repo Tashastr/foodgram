@@ -132,11 +132,13 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         return RecipeListSerializer(instance, context=self.context).data
 
+
 class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
         fields = ('user', 'recipe')
         read_only_fields = ('user',)
+
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
     class Meta:

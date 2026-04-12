@@ -11,10 +11,12 @@ from .serializers import (
 )
 from .utils import generate_shopping_cart_file
 
+
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (permissions.AllowAny,)
+
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
@@ -27,6 +29,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
         if name:
             queryset = queryset.filter(name__istartswith=name)
         return queryset
+
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()

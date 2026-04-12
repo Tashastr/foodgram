@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from .models import Recipe
 
+
 def generate_shopping_cart_file(user):
     recipes = Recipe.objects.filter(shopping_cart__user=user)
     ingredients = {}

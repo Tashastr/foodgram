@@ -2,11 +2,13 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from .models import User, Follow
 
+
 class UserCreateSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = ('id', 'email', 'username', 'first_name', 'last_name', 'password')
         extra_kwargs = {'password': {'write_only': True}}
+
 
 class UserSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
@@ -26,4 +28,6 @@ class UserSerializer(UserSerializer):
         if obj.avatar:
             return obj.avatar.url
         return None
+
+
 CustomUserSerializer = UserSerializer

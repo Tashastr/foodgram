@@ -7,6 +7,7 @@ MAX_LEN_INGREDIENT_NAME = 128
 MAX_LEN_INGREDIENT_UNIT = 64
 MAX_LEN_RECIPE_NAME = 256
 
+
 class Tag(models.Model):
     name = models.CharField(max_length=MAX_LEN_TAG_NAME, unique=True, verbose_name='Название')
     slug = models.SlugField(max_length=MAX_LEN_TAG_SLUG, unique=True, verbose_name='Слаг')
@@ -18,6 +19,7 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=MAX_LEN_INGREDIENT_NAME, verbose_name='Название')
     measurement_unit = models.CharField(max_length=MAX_LEN_INGREDIENT_UNIT, verbose_name='Единица измерения')
@@ -28,6 +30,7 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f'{self.name} ({self.measurement_unit})'
+
 
 class Recipe(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes', verbose_name='Автор')
@@ -47,6 +50,7 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
+
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='recipe_ingredients', verbose_name='Рецепт')
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name='recipe_ingredients', verbose_name='Ингредиент')
@@ -59,6 +63,7 @@ class RecipeIngredient(models.Model):
         verbose_name = 'Ингредиент рецепта'
         verbose_name_plural = 'Ингредиенты рецептов'
 
+
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites', verbose_name='Пользователь')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='favorites', verbose_name='Рецепт')
@@ -69,6 +74,7 @@ class Favorite(models.Model):
         ]
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
+
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shopping_cart', verbose_name='Пользователь')
