@@ -27,8 +27,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             if request.user == author:
                 return Response(
                     {'error': 'Нельзя подписаться на самого себя.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                    )
+                    status=status.HTTP_400_BAD_REQUEST)
             follow, created = Follow.objects.get_or_create(user=request.user,
                                                            author=author
                                                            )
