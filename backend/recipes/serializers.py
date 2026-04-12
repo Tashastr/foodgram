@@ -1,10 +1,11 @@
 import base64
+
 from django.core.files.base import ContentFile
 from rest_framework import serializers
-from .models import (
-    Tag, Ingredient, Recipe, RecipeIngredient, Favorite, ShoppingCart
-)
-from users.serializers import CustomUserSerializer
+from users.serializers import UserSerializer
+
+from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                     ShoppingCart, Tag)
 
 
 class Base64ImageField(serializers.ImageField):
@@ -47,7 +48,7 @@ class RecipeMinifiedSerializer(serializers.ModelSerializer):
 
 class RecipeListSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
-    author = CustomUserSerializer(read_only=True)
+    author = UserSerializer(read_only=True)
     ingredients = IngredientInRecipeSerializer(source='recipeingredient_set',
                                                many=True, read_only=True)
     is_favorited = serializers.SerializerMethodField()
@@ -87,17 +88,17 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     def validate_ingredients(self, value):
         if not value:
-            raise serializers.ValidationError(
-                "Ingredients list cannot be empty.")
+            raise serializers.ValidationError('Список ингредиентов не может быть пустым.')
+        ids = [item['id'] for item in value]
+        if len(ids) != len(set(ids)):
+            raise serializers.ValidationError('Ингредиенты не должны повторяться.')
         for item in value:
             if 'id' not in item or 'amount' not in item:
-                raise serializers.ValidationError(
-                    "Each ingredient must have id and amount.")
+                raise serializers.ValidationError('Каждый ингредиент должен содержать id и количество.')
             if not Ingredient.objects.filter(id=item['id']).exists():
-                raise serializers.ValidationError(
-                    f"Ingredient with id {item['id']} does not exist.")
+                raise serializers.ValidationError(f'Ингредиент с id {item["id"]} не существует.')
             if item['amount'] < 1:
-                raise serializers.ValidationError("Amount must be at least 1.")
+                raise serializers.ValidationError('Количество ингредиента должно быть не менее 1.')
         return value
 
     def create(self, validated_data):
@@ -130,3 +131,15 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return RecipeListSerializer(instance, context=self.context).data
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = ('user', 'recipe')
+        read_only_fields = ('user',)
+
+class ShoppingCartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShoppingCart
+        fields = ('user', 'recipe')
+        read_only_fields = ('user',)

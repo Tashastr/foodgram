@@ -1,34 +1,29 @@
-from django.contrib.auth.models import AbstractUser
-from django.db import models
+from djoser.serializers import UserCreateSerializer, UserSerializer
+from rest_framework import serializers
+from .models import User, Follow
 
+class UserCreateSerializer(UserCreateSerializer):
+    class Meta(UserCreateSerializer.Meta):
+        model = User
+        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
 
-class User(AbstractUser):
-    email = models.EmailField(unique=True)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+class UserSerializer(UserSerializer):
+    is_subscribed = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    class Meta(UserSerializer.Meta):
+        model = User
+        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'is_subscribed', 'avatar')
 
-    def __str__(self):
-        return self.email
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return Follow.objects.filter(user=request.user, author=obj).exists()
+        return False
 
-
-class Follow(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='follower'
-    )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='following'
-    )
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='unique_follow'
-            )
-        ]
+    def get_avatar(self, obj):
+        if obj.avatar:
+            return obj.avatar.url
+        return None
+CustomUserSerializer = UserSerializer
