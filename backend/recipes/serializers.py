@@ -7,6 +7,16 @@ from users.serializers import UserSerializer
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                      ShoppingCart, Tag)
 
+MIN_AMOUNT = 1
+
+class RecipeUpdateSerializer(RecipeCreateUpdateSerializer):
+    # Он наследует поля, но может не работать с partial
+    pass
+
+def get_serializer_class(self):
+    if self.action in ('create', 'partial_update', 'update'):
+        return RecipeCreateUpdateSerializer
+    return RecipeListSerializer
 
 class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
@@ -102,7 +112,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError('Ингредиент с id '
                                                   f'{item["id"]} '
                                                   'не существует.')
-            if item['amount'] < 1:
+            if item['amount'] < MIN_AMOUNT:
                 raise serializers.ValidationError('Количество ингредиента '
                                                   'должно быть не менее 1.')
         return value
