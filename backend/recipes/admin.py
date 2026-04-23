@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django import forms
 
 from .models import (
     Tag, Ingredient, Recipe, RecipeIngredient, Favorite, ShoppingCart
@@ -12,6 +13,18 @@ class TagAdmin(admin.ModelAdmin):
     verbose_name = 'Тег'
     verbose_name_plural = 'Теги'
 
+    class RecipeForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        ingredients = cleaned_data.get('ingredients')
+        if not ingredients or not ingredients.exists():
+            raise forms.ValidationError('Рецепт должен содержать хотя бы один ингредиент.')
+        return cleaned_data
+
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
@@ -23,11 +36,11 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    form = RecipeForm
     list_display = ('name', 'author', 'cooking_time')
     list_filter = ('tags',)
     search_fields = ('name', 'author__username')
-    verbose_name = 'Рецепт'
-    verbose_name_plural = 'Рецепты'
+    inlines = [RecipeIngredientInline] 
 
 
 @admin.register(RecipeIngredient)
