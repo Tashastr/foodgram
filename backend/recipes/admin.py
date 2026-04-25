@@ -23,7 +23,9 @@ class RecipeForm(forms.ModelForm):
         cleaned_data = super().clean()
         ingredients = cleaned_data.get('ingredients')
         if not ingredients or not ingredients.exists():
-            raise forms.ValidationError('Рецепт должен содержать хотя бы один ингредиент.')
+            raise forms.ValidationError('Рецепт '
+                                        'должен содержать хотя бы '
+                                        'один ингредиент.')
         return cleaned_data
 
 
