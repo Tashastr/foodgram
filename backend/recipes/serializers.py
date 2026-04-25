@@ -10,15 +10,6 @@ from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
 MIN_AMOUNT = 1
 
 
-class RecipeUpdateSerializer(RecipeCreateUpdateSerializer):
-    # Он наследует поля, но может не работать с partial
-    pass
-
-def get_serializer_class(self):
-    if self.action in ('create', 'partial_update', 'update'):
-        return RecipeCreateUpdateSerializer
-    return RecipeListSerializer
-
 class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):
@@ -148,6 +139,11 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return RecipeListSerializer(instance, context=self.context).data
+
+
+class RecipeUpdateSerializer(RecipeCreateUpdateSerializer):
+    """Сериализатор для обновления рецепта."""
+    pass
 
 
 class FavoriteSerializer(serializers.ModelSerializer):

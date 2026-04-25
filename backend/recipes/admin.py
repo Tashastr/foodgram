@@ -13,7 +13,8 @@ class TagAdmin(admin.ModelAdmin):
     verbose_name = 'Тег'
     verbose_name_plural = 'Теги'
 
-    class RecipeForm(forms.ModelForm):
+
+class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         fields = '__all__'
@@ -24,6 +25,11 @@ class TagAdmin(admin.ModelAdmin):
         if not ingredients or not ingredients.exists():
             raise forms.ValidationError('Рецепт должен содержать хотя бы один ингредиент.')
         return cleaned_data
+
+
+class RecipeIngredientInline(admin.TabularInline):
+    model = RecipeIngredient
+    extra = 1
 
 
 @admin.register(Ingredient)
@@ -40,7 +46,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'cooking_time')
     list_filter = ('tags',)
     search_fields = ('name', 'author__username')
-    inlines = [RecipeIngredientInline] 
+    inlines = [RecipeIngredientInline]
 
 
 @admin.register(RecipeIngredient)
