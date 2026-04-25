@@ -9,6 +9,7 @@ from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
 
 MIN_AMOUNT = 1
 
+
 class RecipeUpdateSerializer(RecipeCreateUpdateSerializer):
     # Он наследует поля, но может не работать с partial
     pass
