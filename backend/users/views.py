@@ -46,3 +46,11 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
                                 )
             follow.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=["get"], permission_classes=[permissions.IsAuthenticated])
+    def subscriptions(self, request):
+        user = request.user
+        follows = user.follower.all()
+        authors = [follow.author for follow in follows]
+        serializer = self.get_serializer(authors, many=True)
+        return Response(serializer.data)
